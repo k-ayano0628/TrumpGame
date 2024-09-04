@@ -12,7 +12,7 @@ window.addEventListener('DOMContentLoaded', async () =>{
     id = kards.deck_id;
     name.textContent = kards.deck_id;
 
-    yotubaDivDiv.appendChild(name);
+    yotubaDiv.appendChild(name);
 
     //カードの表示
     response = await fetch(apiUrl + id + "/draw/?count=16");
