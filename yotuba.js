@@ -3,7 +3,7 @@ let id = "";
 window.addEventListener('DOMContentLoaded', async () =>{
     let response = await fetch(apiUrl + "new/shuffle/?deck_count=1");
     const kards = await response.json(); 
-    const pokemonDiv = document.getElementById("yotuba");
+    const yotubaDiv = document.getElementById("yotuba");
     yotubaDiv.innerHTML = "";
 
     const name = document.createElement("p");
