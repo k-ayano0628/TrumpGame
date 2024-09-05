@@ -71,8 +71,10 @@ function displayCardInfo(suit, sum) {
 // リセットボタンにイベントリスナーを追加
 document.getElementById('resetButton').addEventListener('click', async () => {
     await loadCards();
+    currentSuit = "";
+    currentSum = 0;
+    displayCardInfo("", 0);
 });
-
 
 // カードをロードする関数
 async function loadCards() {
@@ -90,10 +92,11 @@ async function loadCards() {
         for (let i = 0; i < 16; i++) {
             const cardImage = document.getElementById("card" + (i + 1));
             cardImage.src = cards.cards[i].image;
+            // カードの値とスートを設定
+            cardImage.dataset.value = cards.cards[i].value;
+            cardImage.dataset.suit = cards.cards[i].suit;
         }
     } catch (error) {
         console.error('Error loading cards:', error);
     }
 }
-
-
