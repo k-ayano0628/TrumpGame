@@ -1,5 +1,5 @@
 const apiUrl = "https://deckofcardsapi.com/api/deck/";
-let id = "";
+let deckId = "";
 let currentSuit = "";
 let currentSum = 0;
 
@@ -9,16 +9,11 @@ window.addEventListener('DOMContentLoaded', async () =>{
     const yotubaDiv = document.getElementById("yotuba");
     yotubaDiv.innerHTML = "";
 
-    const name = document.createElement("p");
-
     //IDを入れる
-    id = kards.deck_id;
-    // name.textContent = kards.deck_id;
-
-    // yotubaDiv.appendChild(name);
+    deckId = kards.deck_id;
 
     //カードの表示
-    response = await fetch(apiUrl + id + "/draw/?count=16");
+    response = await fetch(apiUrl + deckId + "/draw/?count=16");
     const cards = await response.json();
 
     for (let i = 0; i < 16; i++) {
@@ -47,6 +42,11 @@ function handleCardClick(cardImage) {
     // 現在のスートと合計を更新
     currentSuit = cardSuit;
     currentSum += cardValue;
+
+    //値が15を超えたら値をリセット
+    if(currentSum > 15){
+        currentSum = 0;
+    }
 
     // カードの値と合計を表示
     displayCardInfo(currentSuit, currentSum);
