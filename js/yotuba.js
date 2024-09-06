@@ -67,6 +67,7 @@ function displayCardInfo(suit, sum) {
 
 
 
+
     
 // リセットボタンにイベントリスナーを追加
 document.getElementById('resetButton').addEventListener('click', async () => {
@@ -100,3 +101,54 @@ async function loadCards() {
         console.error('Error loading cards:', error);
     }
 }
+document.getElementById('resetButton').addEventListener('click', async () => {
+    await loadCards();
+    currentSuit = "";
+    currentSum = 0;
+    displayCardInfo("", 0);
+
+    // 全てのカードから `selected-card` クラスを削除
+    document.querySelectorAll('.wrapper img').forEach(card => {
+        card.classList.remove('selected-card');
+    });
+});
+
+
+
+
+
+
+
+function handleCardClick(cardImage) {
+    const cardValue = getCardValue(cardImage.dataset.value);
+    const cardSuit = cardImage.dataset.suit;
+
+    // 現在選択されているカードのスートと合計を更新
+    if (currentSuit && currentSuit !== cardSuit) {
+        currentSum = 0;
+        // 現在のスートが異なる場合、枠線を消去
+        document.querySelectorAll('.wrapper img').forEach(card => {
+            card.classList.remove('selected-card');
+        });
+    }
+
+    // 現在のスートと合計を更新
+    currentSuit = cardSuit;
+    currentSum += cardValue;
+
+    // カードの値が15を超えた場合、枠線を消去
+    if (currentSum >= 15) {
+        currentSum = 0;
+        document.querySelectorAll('.wrapper img').forEach(card => {
+            card.classList.remove('selected-card');
+        });
+    } else {
+        // クリックされたカードに `selected-card` クラスを追加
+        cardImage.classList.add('selected-card');
+    }
+
+    // 値が15を超えた場合、赤い枠線を消去
+    displayCardInfo(currentSuit, currentSum);
+}
+
+
