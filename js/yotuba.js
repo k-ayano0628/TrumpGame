@@ -39,11 +39,19 @@ window.addEventListener('DOMContentLoaded', async () =>{
 
 //カードをクリックしたときの機能
 function cardClick(cardImage) {
+    // クリックされたカードに `selected-card` クラスを追加
+    cardImage.classList.add('selected-card');
+
     const cardValue = getCardValue(cardImage.dataset.value);
     const cardSuit = cardImage.dataset.suit;
 
     // 異なるスートが選択された場合、値をリセット
     if (currentSuit && currentSuit !== cardSuit) {
+        // 枠線を消去
+        document.querySelectorAll('.wrapper img').forEach(card => {
+            card.classList.remove('selected-card');
+        });
+        
         currentSum = 0;
         selectedCards = [];
     }
@@ -53,12 +61,33 @@ function cardClick(cardImage) {
     currentSum += cardValue;
     selectedCards.push(cardImage);
 
-    // 値が15を超えたら値をリセット
-    if (currentSum > 15) {
+    //JACK・QUEEN・KING用の処理
+    if(currentSum === 100 || currentSum === 200){
+        
+    }else if(currentSum === 300){ // JACK・QUEEN・KINGの場合カードを捨てて山札からカードを入れる
+        // 枠線を消去
+        document.querySelectorAll('.wrapper img').forEach(card => {
+            card.classList.remove('selected-card');
+        });
+
+        selectedCards.forEach(card => replaceCards(card));
         currentSum = 0;
         selectedCards = [];
-    } else if (currentSum == 15) {
-        // 15の場合カードを捨てて山札からカードを入れる
+    }else if (currentSum > 15) { // 値が15を超えたら値をリセット
+        // 枠線を消去
+        document.querySelectorAll('.wrapper img').forEach(card => {
+            card.classList.remove('selected-card');
+        });
+
+        selectedCards.forEach(card => replaceCards(card));
+        currentSum = 0;
+        selectedCards = [];
+    } else if (currentSum == 15) { // 15の場合カードを捨てて山札からカードを入れる
+        // 枠線を消去
+        document.querySelectorAll('.wrapper img').forEach(card => {
+            card.classList.remove('selected-card');
+        });
+
         selectedCards.forEach(card => replaceCards(card));
         currentSum = 0;
         selectedCards = [];
@@ -68,10 +97,10 @@ function cardClick(cardImage) {
     displayCardInfo(currentSuit, currentSum);
 }
 
-//カードのがAの場合は1
+//カードのがAの場合は1、JACK・QUEEN・KINGの場合は100として変換
 function getCardValue(value) {
     if (value === "ACE") return 1;
-    if (value === "JACK" || value === "QUEEN" || value === "KING") return 0;
+    if (value === "JACK" || value === "QUEEN" || value === "KING") return 100;
     return parseInt(value);
 }
 
@@ -83,16 +112,29 @@ function displayCardInfo(suit, sum) {
 
 //値が15の場合の処理
 async function replaceCards(cardImage) {
-    let response = await fetch(apiUrl + deckId + "/draw/?count=1");
-    const cards = await response.json();
-    remainingCard = cards.remaining;
+    //山札が0枚の場合カードを消す
+    if(remainingCard === 0){//動作確認のため30を入れてます
+        // 値とスートと画像を入れる
+        cardImage.dataset.value = 0;
+        cardImage.dataset.suit = "";
+        cardImage.src = "";
+        emptyCard++;
+        //すべてのカードの枠が空いたらgゲームクリア画面に遷移する
+        if(emptyCard >= 16){
+            window.location.href = "gameClear.html"
+        }
+    }else{
+        let response = await fetch(apiUrl + deckId + "/draw/?count=1");
+        const cards = await response.json();
+        remainingCard = cards.remaining;
 
-    console.log("Card replaced. Remaining cards:", remainingCard);
+        console.log(remainingCard);
 
-    // 値とスートと画像を入れる
-    cardImage.dataset.value = cards.cards[0].value;
-    cardImage.dataset.suit = cards.cards[0].suit;
-    cardImage.src = cards.cards[0].image;
+        // 値とスートと画像を入れる
+        cardImage.dataset.value = cards.cards[0].value;
+        cardImage.dataset.suit = cards.cards[0].suit;
+        cardImage.src = cards.cards[0].image;
+    }
 }
 
 
