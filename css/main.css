@@ -9,3 +9,12 @@ body{
     border: 2px solid red; /* 赤い枠線でクリックされたカードを示す */
     box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); /* 赤い影で強調表示 */
 }
+/*アイコン*/
+.icon{
+  width:3%;
+  padding-right :8px;
+}
+.icon:hover{
+  width:2.8%;
+  padding-right :10.4px
+}
