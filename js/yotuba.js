@@ -222,5 +222,14 @@ function handleCardClick(cardImage) {
     // 値が15を超えた場合、赤い枠線を消去
     displayCardInfo(currentSuit, currentSum);
 }
+//説明用モーダルの処理
+function buttonClick() {
+    $(".modal").fadeIn();
+  }
+
+  $(".js-modal-close").on("click", function () {
+    $(".modal").fadeOut();
+    return false;
+  });//モーダルここまで
 
 

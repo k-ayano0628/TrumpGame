@@ -5,37 +5,89 @@
 
     <title>四葉のクローバー</title>
     <link rel="stylesheet" href="css/main.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 </head>
 <body>
 <!--アイコン-->
-<img src="img/はてなマークのアイコン.png"  alt="説明ページ" class="icon" value="Modal Window" >
+<img src="img/はてなマークのアイコン.png"  alt="説明ページ" class="icon" value="Modal Window" onclick="buttonClick()">
 <a href="home.html">
     <img src="img/家のアイコン素材.png"  alt="ホームに戻る" class="icon">
 </a>
 <img src="img/リロード、やり直しのアイコン.png"  alt="リセット" class="icon" id="resetButton"value="リセット">
 <div class="wrapper">
     <div id="yotuba"></div>
-    <img id="card1">
-    <img id="card2">
-    <img id="card3">
-    <img id="card4"><br>
-    <img id="card5">
-    <img id="card6">
-    <img id="card7">
-    <img id="card8"><br>
-    <img id="card9">
-    <img id="card10">
-    <img id="card11">
-    <img id="card12"><br>
-    <img id="card13">
-    <img id="card14">
-    <img id="card15">
-    <img id="card16"><br>
-
+    <img id="card1" class="cards">
+    <img id="card2" class="cards">
+    <img id="card3" class="cards">
+    <img id="card4" class="cards"><br>
+    <img id="card5" class="cards">
+    <img id="card6" class="cards">
+    <img id="card7" class="cards">
+    <img id="card8" class="cards"><br>
+    <img id="card9" class="cards">
+    <img id="card10" class="cards">
+    <img id="card11" class="cards">
+    <img id="card12" class="cards"><br>
+    <img id="card13" class="cards">
+    <img id="card14" class="cards">
+    <img id="card15" class="cards">
+    <img id="card16" class="cards"><br>
+    <div id="yamahudablock">
+      <img id="yamahuda">
+    </div>
 </div>
+<!--説明をモーダルで表示-->
+<div class="modal">
+    <div class="modal_bg js-modal-close"></div>
+    <div class="modalScroll">
+      <div class="ScrollContent">
+        <div class="modal_content">
+          <p class="modal_center">ウインドウ外をクリックでクローズします</p>
+            <h1 class="modal_content1">四つ葉のクローバーとは？</h1>
+            <p>四つ葉のクローバーは、1人で遊ぶことができるトランプゲームです。
+
+                カードを並べ、同じマークで合計が15になるカードを取り除いていきます。
+                
+                同じマークのJ、Q、Kが揃ったら、それも取り除くことができます。
+                
+                最終的に全てのカードを取り除くことができれば、ゲームクリアです。</p>
+            <h1 class="modal_content1">四葉のクローバーのルール</h1>
+            <p class="modal_center">使うカード</p>
+
+            <p class="modal_center">ジョーカーと4枚の10を除く48枚のカードを使います。</p>
+              
+            <p class="modal_center">流れ</p>
+              
+              <p>1.縦4列、横4列に16枚並べてあるカードの中で同じマークで合計が15になるカードを探す。<br>
+              足して15になるカードであれば、何枚でもよい。<br><br>
+              
+              2.足して15になるカードがあったら取り除く。<br><br>
+              
+              3.同じマークのJ、Q、Kも取り除くことができるが、これは3枚揃っている場合のみとなる。<br><br>
+              
+              4.カードを取り除いて空いたスペースには山札からカードが補充される。<br><br>
+              
+              5.同じように足して15になるカードと、同じマークのJ、Q、Kを探して取り除く。<br><br>
+              
+              6.この手順を繰り返し、カードを全て取り除くことができればゲームクリアとなる。<br><br>
+              
+              7.途中で手詰まりになったらクリア失敗となる。<br>
+              </p>
+            <h1 class="modal_content2">四つ葉のクローバーの攻略方法</h1>
+            <p>四つ葉のクローバーは戦略というよりの運の要素が強いゲームです。
+
+              16枚並べた段階で手詰まりになってしまうこともあります。<br>
+
+              ダメだと思ったら早めに見切りをつけ、再チャレンジしましょう。</p>
+          <!--<a class="js-modal-close" href="">close</a>-->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--モーダルここまで-->
+
+<!--<div id="selectedCardInfo" style="margin-top: 20px; font-weight: bold;"></div>-->
 <!--<input type="button" id="resetButton" value="リセット"/>-->
-<img id="yamahuda">
-<div id="selectedCardInfo" style="margin-top: 20px; font-weight: bold;"></div>
 
 <script src="js/yotuba.js"></script>
 </body>

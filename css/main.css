@@ -4,6 +4,7 @@ body{
   }
   .wrapper{
     text-align: center;
+    position: relative;
   }
   .selected-card {
     border: 2px solid red; /* 赤い枠線でクリックされたカードを示す */
@@ -18,3 +19,86 @@ body{
   width:2.8%;
   padding-right :10.4px
 }
+.cards{
+  width:6.7%
+}
+/*山札*/
+#yamahudablock{
+     width:fit-content;
+    /*コレ*/position: absolute;
+    /*コレ*/right: 45vh;
+    /*コレ*/bottom: -0.3vh;
+  
+  }
+#yamahuda{
+  width:40%;
+}
+/*モーダル*/
+.button,
+.modalScroll,
+.ScrollContent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modal {
+  display: none;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+.modal_bg {
+  background: rgba(0, 0, 0, 0.32);
+  height: 100vh;
+  position: absolute;
+  width: 100%;
+}
+
+.js-modal-close {
+  color: #555;
+}
+
+.modalScroll {
+  background: #fff;
+  height: 400px;
+  width: 400px;
+  max-height: 800px;
+  padding: 20px;
+  border-radius: 20px;
+}
+.ScrollContent {
+  overflow-y: scroll;
+  height: 350px;
+  width: 95%;
+  border-radius: 20px;
+}
+::-webkit-scrollbar {
+  border-radius: 10px;
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #b6b6b6;
+  border-radius: 10px;
+}
+
+.modal_content h1,
+.modal_content {
+  color: rgb(49, 49, 49);
+  padding-top: 70px;
+  padding-bottom: 5px;
+}
+.modal_content1{
+  font-size: 5vh;
+  text-align: center;
+}
+.modal_content2{
+  font-size: 4.5vh;
+  text-align: center;
+}
+.modal_center{
+  text-align: center;
+}
+/*モーダルここまで*/
