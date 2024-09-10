@@ -233,3 +233,74 @@ function buttonClick() {
   });//モーダルここまで
 
 
+
+
+
+  
+
+
+
+
+
+  let timerInterval;
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            // タイマーの表示
+            const timerDisplay = document.getElementById('timer');
+            const startTime = localStorage.getItem('startTime');
+            
+            if (startTime) {
+                const start = parseInt(startTime);
+                const now = Date.now();
+                const elapsed = now - start;
+
+                timerInterval = setInterval(() => {
+                    const elapsedTime = Date.now() - start;
+                    const seconds = Math.floor((elapsedTime / 1000) % 60);
+                    const minutes = Math.floor((elapsedTime / 1000 / 60) % 60);
+                    timerDisplay.textContent = `タイマー: ${minutes}分 ${seconds}秒`;
+                }, 1000);
+            }
+
+            // デッキの初期化とカードの描画
+            initializeDeck();
+        });
+
+        // デッキの初期化
+        async function initializeDeck() {
+            const apiUrl = "https://deckofcardsapi.com/api/deck/";
+            const response = await fetch(apiUrl + "new/shuffle/?deck_count=1");
+            const kards = await response.json();
+            const deckId = kards.deck_id;
+            
+            const yotubaDiv = document.getElementById("yotuba");
+            yotubaDiv.innerHTML = "";
+
+            response = await fetch(apiUrl + deckId + "/draw/?count=16");
+            const cards = await response.json();
+            remainingCard = cards.remaining;
+
+            for (let i = 0; i < 16; i++) {
+                const cardImage = document.getElementById("card" + (i + 1));
+                
+                cardImage.dataset.value = cards.cards[i].value;
+                cardImage.dataset.suit = cards.cards[i].suit;
+                cardImage.src = cards.cards[i].image;
+
+                cardImage.addEventListener('click', () => cardClick(cardImage));
+            }
+            
+            const yamahudaImage = document.getElementById("yamahuda");
+            yamahudaImage.src = "https://deckofcardsapi.com/static/img/back.png";
+        }
+
+        // ゲームクリア時の処理
+        async function handleGameClear() {
+            clearInterval(timerInterval);
+            const timerDisplay = document.getElementById('timer');
+            const finalTime = timerDisplay.textContent;
+            
+            localStorage.setItem('gameTime', finalTime);
+            window.location.href = "gameClear.html";
+        }
+
