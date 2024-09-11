@@ -88,13 +88,13 @@ function cardClick(cardImage) {
     if(currentSum === 100 || currentSum === 200){
         
     }else if(currentSum === 300){ // JACK・QUEEN・KINGの場合カードを捨てて山札からカードを入れる
-        initializCard()
         selectedCards.forEach(card => replaceCards(card));
+        initializCard()
     }else if (currentSum > 15) { // 値が15を超えたら値をリセット
         initializCard();
     } else if (currentSum == 15) { // 15の場合カードを捨てて山札からカードを入れる
-        initializCard();
         selectedCards.forEach(card => replaceCards(card));
+        initializCard();
     }
 
     // カードの値と合計を表示
@@ -157,100 +157,6 @@ async function replaceCards(cardImage) {
         cards = await response.json();
     }
 }
-
-
-
-    
-// リセットボタンにイベントリスナーを追加
-document.getElementById('resetButton').addEventListener('click', async () => {
-    await loadCards();
-    currentSuit = "";
-    currentSum = 0;
-    displayCardInfo("", 0);
-});
-
-// カードをロードする関数
-async function loadCards() {
-    try {
-        // 新しいデッキをシャッフル
-        let response = await fetch(apiUrl + "new/shuffle/?deck_count=1");
-        const data = await response.json();
-        deckId = data.deck_id;
-
-        // 16枚のカードを引く
-        response = await fetch(apiUrl + deckId + "/draw/?count=16");
-        const cards = await response.json();
-
-        // カード画像を表示
-        for (let i = 0; i < 16; i++) {
-            const cardImage = document.getElementById("card" + (i + 1));
-            cardImage.src = cards.cards[i].image;
-            // カードの値とスートを設定
-            cardImage.dataset.value = cards.cards[i].value;
-            cardImage.dataset.suit = cards.cards[i].suit;
-        }
-    } catch (error) {
-        console.error('Error loading cards:', error);
-    }
-}
-document.getElementById('resetButton').addEventListener('click', async () => {
-    await loadCards();
-    currentSuit = "";
-    currentSum = 0;
-    displayCardInfo("", 0);
-
-    // 全てのカードから `selected-card` クラスを削除
-    document.querySelectorAll('.wrapper img').forEach(card => {
-        card.classList.remove('selected-card');
-    });
-});
-
-
-
-
-
-
-
-function handleCardClick(cardImage) {
-    const cardValue = getCardValue(cardImage.dataset.value);
-    const cardSuit = cardImage.dataset.suit;
-
-    // 現在選択されているカードのスートと合計を更新
-    if (currentSuit && currentSuit !== cardSuit) {
-        currentSum = 0;
-        // 現在のスートが異なる場合、枠線を消去
-        document.querySelectorAll('.wrapper img').forEach(card => {
-            card.classList.remove('selected-card');
-        });
-    }
-
-    // 現在のスートと合計を更新
-    currentSuit = cardSuit;
-    currentSum += cardValue;
-
-    // カードの値が15を超えた場合、枠線を消去
-    if (currentSum >= 15) {
-        currentSum = 0;
-        document.querySelectorAll('.wrapper img').forEach(card => {
-            card.classList.remove('selected-card');
-        });
-    } else {
-        // クリックされたカードに `selected-card` クラスを追加
-        cardImage.classList.add('selected-card');
-    }
-
-    // 値が15を超えた場合、赤い枠線を消去
-    displayCardInfo(currentSuit, currentSum);
-}
-//説明用モーダルの処理
-function buttonClick() {
-    $(".modal").fadeIn();
-  }
-
-  $(".js-modal-close").on("click", function () {
-    $(".modal").fadeOut();
-    return false;
-  });//モーダルここまで
 
 
 
