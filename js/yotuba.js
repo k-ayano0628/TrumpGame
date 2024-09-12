@@ -6,6 +6,7 @@ let currentSuit = "";//選択したカードのスート
 let currentSum = 0;//選択したカードの値
 let selectedCards = [];//選択したカード
 let remainingCard = 0;//山札の残りのカード
+let emptyCard = 0; //空になった場の数
 
 window.addEventListener('DOMContentLoaded', async () => {
     let response = await fetch(apiUrl + "new/shuffle/?cards=AS,2S,3S,4S,5S,6S,7S,8S,9S,JS,QS,KS,AH,2H,3H,4H,5H,6H,7H,8H,9H,JH,QH,KH,AD,2D,3D,4D,5D,6D,7D,8D,9D,JD,QD,KD,AC,2C,3C,4C,5C,6C,7C,8C,9C,JC,QC,KC");
@@ -45,8 +46,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 
     //banoCardパイルにカードを入れる
-    response = await fetch(apiUrl + deckId + "/pile/banoCard/add/?cards=" + banoCard);
-    cards = await response.json();
+    await fetch(apiUrl + deckId + "/pile/banoCard/add/?cards=" + banoCard);
     banoCard = "";
 
     //山札を表示
@@ -54,7 +54,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     yamahudaImage.src = "https://deckofcardsapi.com/static/img/back.png";
 });
 
-//カードをクリックしたときの機能
+// カードをクリックしたときの機能
 function cardClick(cardImage) {
     if (cardImage.classList.contains('selected-card')) {
         return;
@@ -68,100 +68,106 @@ function cardClick(cardImage) {
 
     // 異なるスートが選択された場合、値をリセット
     if (currentSuit && currentSuit !== cardSuit) {
-        initializCard()
-        console.log("test");
-        return; 
+        initializeCard();
+        return;
     }
+
 
     // 現在のスートと合計と選択したカードを更新
     currentSuit = cardSuit;
     currentSum += cardValue;
     selectedCards.push(cardImage);
 
-    console.log(selectedCards[0]);
-
     //JACK・QUEEN・KING用の処理
     if (currentSum === 100 || currentSum === 200) {
-
-    } else if (currentSum === 300) { // JACK・QUEEN・KINGの場合カードを捨てて山札からカードを入れる
-        selectedCards.forEach(card => replaceCards(card));
-        initializCard()
+        // 何もしない（条件に合わせて処理追加可能）
+    } else if (currentSum === 300 || currentSum === 15) { // JACK・QUEEN・KINGを選択または15の場合カードを捨てて山札からカードを入れる
+        replaceCards().then(() => {
+            initializeCard();
+        });
     } else if (currentSum > 15) { // 値が15を超えたら値をリセット
-        initializCard();
-    } else if (currentSum == 15) { // 15の場合カードを捨てて山札からカードを入れる
-        selectedCards.forEach(card => replaceCards(card));
-        initializCard();
+        initializeCard();
     }
 }
 
-//カードのがAの場合は1、JACK・QUEEN・KINGの場合は100として変換
+// カードと選択したカードリストを初期化
+function initializeCard() {
+    // 枠線を消去
+    document.querySelectorAll('.wrapper img').forEach(card => {
+        card.classList.remove('selected-card');
+    });
+
+    currentSuit = "";
+    currentSum = 0;
+    selectedCards = [];
+}
+
+// カードの値がAの場合は1、JACK・QUEEN・KINGの場合は100として変換
 function getCardValue(value) {
     if (value === "ACE") return 1;
     if (value === "JACK" || value === "QUEEN" || value === "KING") return 100;
     return parseInt(value);
 }
 
-//カードと選択したカードリストを初期化
-function initializCard() {
-    // 枠線を消去
-    document.querySelectorAll('.wrapper img').forEach(card => {
-        card.classList.remove('selected-card');
-    });
+// 山札のカードを引く処理
+async function replaceCards() {
+    // 捨て札パイルにカードを入れる
+    if (sutehuda === "") {
+        sutehuda = selectedCards[0].dataset.code;
+    }
+    for (let i = 0; i < selectedCards.length; i++) {
+        sutehuda += "," + selectedCards[i].dataset.code;
+    }
+    
 
-    currentSuit ="";
-    currentSum = 0;
-    selectedCards = [];
-}
+    // 山札が0枚の場合カードを消す
+    if (remainingCard === 0 ) {//===0に直す
+        selectedCards.forEach(card => {
+            card.dataset.value = 0;
+            card.dataset.suit = "";
+            card.src = "";
+        });
+        emptyCard += selectedCards.length;
 
-//値が15の場合の処理
-async function replaceCards(cardImage) {
-    //山札が0枚の場合カードを消す
-    if (remainingCard === 0) {
-        // 値とスートと画像を入れる
-        cardImage.dataset.value = 0;
-        cardImage.dataset.suit = "";
-        cardImage.src = "";
-        emptyCard++;
+        // 捨て札パイルにカードを追加
+        await fetch(apiUrl + deckId + "/pile/sutehuda/add/?cards=" + sutehuda);
 
-        //sutehudaパイルにカードを入れる
-        sutehuda += "," + cardImage.dataset.code;
-        const response = await fetch(apiUrl + deckId + "/pile/sutehuda/add/?cards=" + sutehuda);
-        const cards = await response.json();
 
-        //すべてのカードの枠が空いたらゲームクリア画面に遷移する
-        if (emptyCard >= 16) {
-            window.location.href = "gameClear.html"
+        // 全てのカードの枠が空いたらゲームクリア画面に遷移する
+        if (emptyCard >= 16) {//>=16に直す
+            handleGameClear();
         }
     } else {
-        //sutehudaパイルにカードを入れる
-        if (sutehuda == "") {
-            sutehuda = cardImage.dataset.code;
-        } else {
-            sutehuda += "," + cardImage.dataset.code;
-        }
-        let response = await fetch(apiUrl + deckId + "/pile/sutehuda/add/?cards=" + sutehuda);
-        let cards = await response.json();
+        // 捨て札パイルにカードを追加
+        await fetch(apiUrl + deckId + "/pile/sutehuda/add/?cards=" + sutehuda);
 
-        //山札からカードを配置する
-        response = await fetch(apiUrl + deckId + "/draw/?count=1");
-        cards = await response.json();
+        // 山札からカードを引く
+        const response = await fetch(apiUrl + deckId + "/draw/?count=" + selectedCards.length);
+        const cards = await response.json();
         remainingCard = cards.remaining;
 
         console.log(remainingCard);
 
-        // 値とスートと画像を入れる
-        cardImage.dataset.code = cards.cards[0].code;
-        cardImage.dataset.value = cards.cards[0].value;
-        cardImage.dataset.suit = cards.cards[0].suit;
-        cardImage.src = cards.cards[0].image;
+        // 引いたカードを場に配置
+        selectedCards.forEach((card, index) => {
+            card.dataset.code = cards.cards[index].code;
+            card.dataset.value = cards.cards[index].value;
+            card.dataset.suit = cards.cards[index].suit;
+            card.src = cards.cards[index].image;
+            //banoCardパイル処理
+            if (banoCard === "") {
+                banoCard = cards.cards[index].code;
+            } else {
+                banoCard += "," + cards.cards[index].code;
+            }
+        });
 
-        //banoCardパイルにカードを入れる
-        banoCard = cards.cards[0].code;
-        response = await fetch(apiUrl + deckId + "/pile/banoCard/add/?cards=" + banoCard);
-        cards = await response.json();
+        // banoCardパイルに追加
+        await fetch(apiUrl + deckId + "/pile/banoCard/add/?cards=" + banoCard);
         banoCard = "";
     }
 }
+
 
 //シャッフル機能
 document.getElementById('resetButton').addEventListener('click', async () => {
@@ -172,7 +178,6 @@ document.getElementById('resetButton').addEventListener('click', async () => {
 
     //IDを入れる
     deckId = cards.deck_id;
-    console.log(deckId);
 
     //カードの表示
     response = await fetch(apiUrl + deckId + "/draw/?count=16");
@@ -199,13 +204,9 @@ document.getElementById('resetButton').addEventListener('click', async () => {
     }
 
     //banoCardパイルにカードを入れる
-    response = await fetch(apiUrl + deckId + "/pile/banoCard/add/?cards=" + banoCard);
-    cards = await response.json();
+    await fetch(apiUrl + deckId + "/pile/banoCard/add/?cards=" + banoCard);
     banoCard = "";
-
-    initializCard()
 });
-
 
 
 
@@ -224,45 +225,14 @@ window.addEventListener('DOMContentLoaded', () => {
         const now = Date.now();
         const elapsed = now - start;
 
-                timerInterval = setInterval(() => {
-                    const elapsedTime = Date.now() - start;
-                    const seconds = Math.floor((elapsedTime / 1000) % 60);
-                    const minutes = Math.floor((elapsedTime / 1000 / 60) % 60);
-                    timerDisplay.textContent = `経過時間: ${minutes}分 ${seconds}秒`;
-                }, 1000);
-            }
-
-    // デッキの初期化とカードの描画
-    //initializeDeck();
+        timerInterval = setInterval(() => {
+            const elapsedTime = Date.now() - start;
+            const seconds = Math.floor((elapsedTime / 1000) % 60);
+            const minutes = Math.floor((elapsedTime / 1000 / 60) % 60);
+            timerDisplay.textContent = `経過時間: ${minutes}分 ${seconds}秒`;
+        }, 1000);
+    }
 });
-
-// デッキの初期化
-// async function initializeDeck() {
-//     const apiUrl = "https://deckofcardsapi.com/api/deck/";
-//     const response = await fetch(apiUrl + "new/shuffle/?deck_count=1");
-//     const kards = await response.json();
-//     const deckId = kards.deck_id;
-
-//     const yotubaDiv = document.getElementById("yotuba");
-//     yotubaDiv.innerHTML = "";
-
-//     response = await fetch(apiUrl + deckId + "/draw/?count=16");
-//     const cards = await response.json();
-//     remainingCard = cards.remaining;
-
-//     for (let i = 0; i < 16; i++) {
-//         const cardImage = document.getElementById("card" + (i + 1));
-
-//         cardImage.dataset.value = cards.cards[i].value;
-//         cardImage.dataset.suit = cards.cards[i].suit;
-//         cardImage.src = cards.cards[i].image;
-
-//         cardImage.addEventListener('click', () => cardClick(cardImage));
-//     }
-
-//     const yamahudaImage = document.getElementById("yamahuda");
-//     yamahudaImage.src = "https://deckofcardsapi.com/static/img/back.png";
-// }
 
 // ゲームクリア時の処理
 async function handleGameClear() {
@@ -270,16 +240,18 @@ async function handleGameClear() {
     const timerDisplay = document.getElementById('timer');
     const finalTime = timerDisplay.textContent;
 
+    console.log(finalTime);
+
     localStorage.setItem('gameTime', finalTime);
     window.location.href = "gameClear.html";
 }
 //モーダル用
 function buttonClick() {
     $(".modal").fadeIn();
-  }
+}
 
-  $(".js-modal-close").on("click", function () {
+$(".js-modal-close").on("click", function () {
     $(".modal").fadeOut();
     return false;
-  });
+});
 
