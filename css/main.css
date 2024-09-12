@@ -1,6 +1,13 @@
+/*フォントの指定*/
+@font-face {
+  font-family:"Rounded M+"; 
+  src:url("../font/rounded-mplus-2p-regular.ttf")format("truetype"); 
+}
 body{
-    font-family:'メイリオ', 'Meiryo', sans-serif;
+    font-family:"Rounded M+", sans-serif;
     background-color: #339751;
+    margin: 0;
+    padding: 0;
   }
   .wrapper{
     text-align: center;
@@ -12,6 +19,8 @@ body{
 }
 /*アイコン*/
 .icon{
+  margin-top: 4px;
+  margin-left: 4px;
   width:3%;
   padding-right :8px;
 }
@@ -20,18 +29,28 @@ body{
   padding-right :10.4px
 }
 .cards{
-  width:6.7%
+  width:6.8%;
+}
+a{
+  text-decoration: none;
 }
 /*山札*/
 #yamahudablock{
-     width:fit-content;
-    /*コレ*/position: absolute;
-    /*コレ*/right: 45vh;
-    /*コレ*/bottom: -0.3vh;
-  
+    width:fit-content;
+    
   }
 #yamahuda{
-  width:40%;
+  width:6.8%;
+  position: absolute;
+  right: 25%;
+  bottom: 1%;
+}
+/*経過時間*/
+#timer{
+  width: 170px;
+  color: #FFF;
+  position: absolute;
+  bottom: -0.2vh;
 }
 /*モーダル*/
 .button,

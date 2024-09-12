@@ -1,12 +1,23 @@
-
+/*フォントの指定*/
+@font-face {
+  font-family:"Rounded M+"; 
+  src:url("../font/rounded-mplus-2p-regular.ttf")format("truetype"); 
+}
+@font-face {
+  font-family:"コーポレートロゴ"; 
+  src:url("../font/Corporate-Logo-Bold-ver3.otf"); 
+}
 body{
-    font-family:'メイリオ', 'Meiryo', sans-serif;
+    font-family:"Rounded M+", sans-serif;
     background-color: #83d46b;
+    margin: 0;
+    padding: 0;
   }
   .title{
     text-align: center;
   }
-  h1{
+  .title_txt{
+    font-family:"コーポレートロゴ",sans-serif;
     font-size: 10vh;
     color: #FFF;
   }
@@ -44,6 +55,8 @@ body{
   height:7vh;
 }
 .icon{
+  margin-top: 4px;
+  margin-left: 4px;
   width:3%
 }
 .icon:hover{

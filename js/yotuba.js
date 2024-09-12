@@ -258,7 +258,7 @@ function buttonClick() {
                     const elapsedTime = Date.now() - start;
                     const seconds = Math.floor((elapsedTime / 1000) % 60);
                     const minutes = Math.floor((elapsedTime / 1000 / 60) % 60);
-                    timerDisplay.textContent = `タイマー: ${minutes}分 ${seconds}秒`;
+                    timerDisplay.textContent = `経過時間: ${minutes}分 ${seconds}秒`;
                 }, 1000);
             }
 
