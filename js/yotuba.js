@@ -206,6 +206,7 @@ document.getElementById('resetButton').addEventListener('click', async () => {
     //banoCardパイルにカードを入れる
     await fetch(apiUrl + deckId + "/pile/banoCard/add/?cards=" + banoCard);
     banoCard = "";
+    initializeCard();
 });
 
 
