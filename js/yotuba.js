@@ -217,6 +217,7 @@ let timerInterval;
 
 window.addEventListener('DOMContentLoaded', () => {
     // タイマーの表示
+    localStorage.setItem('startTime', Date.now());
     const timerDisplay = document.getElementById('timer');
     const startTime = localStorage.getItem('startTime');
 

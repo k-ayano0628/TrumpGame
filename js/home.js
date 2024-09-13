@@ -10,6 +10,5 @@ function buttonClick() {
 
   function startTimer() {
     // タイマーの開始
-    localStorage.setItem('startTime', Date.now());
     window.location.href = 'main.html';
 }
