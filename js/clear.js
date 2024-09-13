@@ -5,7 +5,7 @@ window.addEventListener('DOMContentLoaded', () => {
     console.log("ゲームタイム: ", gameTime);  // デバッグ用
     
     if (gameTime) {
-        gameTimeDisplay.textContent = `ゲームクリアタイム: ${gameTime}`;
+        gameTimeDisplay.textContent = `${gameTime}`;
         localStorage.removeItem('startTime');
         localStorage.removeItem('gameTime');
     }
